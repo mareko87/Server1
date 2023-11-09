@@ -145,7 +145,6 @@ public class DBConnectionForm extends javax.swing.JFrame {
      * brisem main metodu jer koristim drugu u main.Start.java
      */
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnConnect;
