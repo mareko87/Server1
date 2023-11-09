@@ -14,8 +14,11 @@ import form.DBConnectionForm;
 public class Start {
     
     public static void main(String[] args) {
-        DBConnectionForm dbConnectionForm = new DBConnectionForm();
+        /**tacka ulaza - main metoda
+         *instanciram formu za konektovanje na bazu*/
+        DBConnectionForm dbConnectionForm = new DBConnectionForm();    
         dbConnectionForm.setLocationRelativeTo(null);
+        /**postaje vidljiva*/
         dbConnectionForm.setVisible(true);
     }
     
