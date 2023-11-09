@@ -142,7 +142,7 @@ public class DBConnectionForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-     * brisem main metodu
+     * brisem main metodu jer koristim drugu u main.Start.java
      */
 
 
