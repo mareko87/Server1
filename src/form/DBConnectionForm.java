@@ -5,6 +5,11 @@
  */
 package form;
 
+
+import db.DBBroker;
+import db.connection.DbConnectionDefaults;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author marek
@@ -25,7 +30,8 @@ public class DBConnectionForm extends javax.swing.JFrame {
         initComponents();
         /**moja metoda za setup default vrednosti*/
         setDefaultFieldValues();
-//        btnConnect.requestFocusInWindow();
+        /**selektujem ovo dugme odah pri otvaranju prozora*/
+        btnConnect.requestFocusInWindow();
     }
 
     /**
@@ -73,8 +79,18 @@ public class DBConnectionForm extends javax.swing.JFrame {
         txtPassword.setText("root");
 
         btnConnect.setText("Connect");
+        btnConnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConnectActionPerformed(evt);
+            }
+        });
 
         btnCancel.setText("Cancel");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -82,9 +98,7 @@ public class DBConnectionForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblLocalhost, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPassword, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(lblPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -97,7 +111,8 @@ public class DBConnectionForm extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(lblJdbc, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(lblDbName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lblUsername, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblUsername, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblLocalhost, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -141,6 +156,14 @@ public class DBConnectionForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        canceling();
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
+        connection();
+    }//GEN-LAST:event_btnConnectActionPerformed
+
     /**
      * brisem main metodu jer koristim drugu u main.Start.java
      */
@@ -162,6 +185,53 @@ public class DBConnectionForm extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void setDefaultFieldValues() {
+        /**pravim javni interfejs u Common/src/db.connection*/
+        txtJdbc.setText(DbConnectionDefaults.JDBC);
+        txtLocalhost.setText(DbConnectionDefaults.LOCALHOST);
+        txtDbName.setText(DbConnectionDefaults.DB_NAME);
+        txtUsername.setText(DbConnectionDefaults.USERNAME);
+        txtPassword.setText(DbConnectionDefaults.PASSWORD);
+    }
+
+    private void canceling() {
+        /**OS gasi trenutni JFrame i brise RAM*/
+        dispose();
+        /**Gasi Java virtuelnu masinu u potpunosti*/
+        System.exit(0);
+    }
+
+    private void connection() {
+        /**Prvo validacija unosa*/
+        boolean validatedSuccessfuly = validaton();
+        /**ako nije, poruka i prekidam operaciju*/
+        if(!validatedSuccessfuly){
+            JOptionPane.showMessageDialog(rootPane, "All fields are required, expect password!");
+            return;
+        }
+        /**ako jeste, postavi parametre DB brokera i konektuj se*/
+        setDBBrokerConnectionParameters();
+        
+        connect();
+    }
+
+    private boolean validaton() {
+         /**hvatam polja i gledam da je je ijedno prazno*/
+         jdbc = txtJdbc.getText();
+         localhost = txtLocalhost.getText();
+         dbName = txtDbName.getText();
+         username = txtUsername.getText();
+         password = String.valueOf(txtPassword.getPassword());
+         
+         return !(jdbc.isEmpty() || localhost.isEmpty() || dbName.isEmpty() || username.isEmpty());
+    }
+
+    private void setDBBrokerConnectionParameters() {
+        /**setujem polja DB Brokera, ali pre toga implementiram Server/db.DBBroker (DriverManager pravi konekciju) */
+        /**DBBroker je singleton klasa - samo jedna instanca*/
+        DBBroker.jdbc = jdbc;
+    }
+
+    private void connect() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
